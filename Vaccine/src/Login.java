@@ -59,7 +59,12 @@ public class Login extends JFrame {
                         String res = user.getPosition().toString();
                         System.out.println(res);
                         if(res.equals("emch")){
-                            new EmchModule();
+                            dispose();
+                            new EmchModule(user);
+                        }
+                        else if(res.equals("irgen")){
+                            dispose();
+                            new IrgenModule(user);
                         }
                     }
                     else

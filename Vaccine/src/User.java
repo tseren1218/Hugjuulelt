@@ -9,6 +9,13 @@ public class User {
         this.position = position;
     }
 
+    public User(User user){
+        this.rd = user.getRd();
+        this.fname = user.getFname();
+        this.lname = user.getLname();
+        this.position = user.getPosition();
+    }
+
     public String getRd() {
         return rd;
     }
