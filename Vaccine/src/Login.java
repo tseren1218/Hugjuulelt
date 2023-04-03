@@ -57,7 +57,6 @@ public class Login extends JFrame {
                                 result.getString("position")
                         );
                         String res = user.getPosition().toString();
-                        System.out.println(res);
                         if(res.equals("emch")){
                             dispose();
                             new EmchModule(user);
