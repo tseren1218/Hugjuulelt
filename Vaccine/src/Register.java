@@ -6,7 +6,8 @@ import java.sql.*;
 
 public class Register extends JFrame {
 
-    JTextField username, password, rd, fname, lname;
+    JTextField username, rd, fname, lname;
+    JPasswordField password;
 
     JButton registerButton;
     JLabel title, usernameLabel, passwordLabel, positionLabel, rdLabel, fnameLabel, lnameLabel;
@@ -34,7 +35,7 @@ public class Register extends JFrame {
         title.setFont(new Font("Roboto", Font.BOLD, 20));
 
         username = new JTextField(30);
-        password = new JTextField(30);
+        password = new JPasswordField(30);
         rd = new JTextField(30);
         fname = new JTextField(30);
         lname = new JTextField(30);

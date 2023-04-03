@@ -6,13 +6,14 @@ import java.sql.*;
 
 public class Login extends JFrame {
 
-    JTextField username, password;
+    User user;
+    JTextField username;
+    JPasswordField password;
     JButton loginButton, registerButton;
     JLabel title, status;
 
     public Login() {
         createGUI();
-
     }
 
     public void createGUI() {
@@ -27,7 +28,7 @@ public class Login extends JFrame {
         status = new JLabel("Нэвтрэх нэр, нууц үгээ оруулна уу.", SwingConstants.CENTER);
 
         username = new JTextField(30);
-        password = new JTextField(20);
+        password = new JPasswordField(20);
 
 
         loginButton = new JButton("Нэвтрэх");
@@ -44,7 +45,22 @@ public class Login extends JFrame {
                     pst.setString(2, password.getText());
                     ResultSet rs = pst.executeQuery();
                     if(rs.next()){
-                        status.setText("Success!");
+                        String userData = "Select * from users where username = ?";
+                        PreparedStatement userStatement = con.prepareStatement(userData);
+                        userStatement.setString(1, username.getText());
+                        ResultSet result = userStatement.executeQuery();
+                        result.next();
+                        user = new User(
+                                result.getString("rd"),
+                                result.getString("fname"),
+                                result.getString("lname"),
+                                result.getString("position")
+                        );
+                        String res = user.getPosition().toString();
+                        System.out.println(res);
+                        if(res.equals("emch")){
+                            new EmchModule();
+                        }
                     }
                     else
                         status.setText("No user found");
