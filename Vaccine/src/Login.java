@@ -21,6 +21,7 @@ public class Login extends JFrame {
         setLayout(new GridLayout(6, 1, 10, 10));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(400, 300);
+        setLocationRelativeTo(null);
         setTitle("Вакцины систем");
 
         title = new JLabel("Вакцины системд тавтай морилно уу", SwingConstants.CENTER);
@@ -57,7 +58,7 @@ public class Login extends JFrame {
                                 result.getString("position")
                         );
                         String res = user.getPosition().toString();
-                        if(res.equals("emch")){
+                        if(res.equals("emch") || res.equals("suvilagch")){
                             dispose();
                             new EmchModule(user);
                         }
