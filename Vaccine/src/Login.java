@@ -26,7 +26,7 @@ public class Login extends JFrame {
 
         title = new JLabel("Вакцины системд тавтай морилно уу", SwingConstants.CENTER);
         title.setFont(new Font("Roboto", Font.BOLD, 20));
-        status = new JLabel("Нэвтрэх нэр, нууц үгээ оруулна уу.", SwingConstants.CENTER);
+        status = new JLabel("Регистрийн дугаар, нууц үгээ оруулна уу.", SwingConstants.CENTER);
 
         username = new JTextField(30);
         password = new JPasswordField(20);
@@ -40,13 +40,13 @@ public class Login extends JFrame {
 
                     Class.forName("com.mysql.jdbc.Driver");
                     Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/vaccine","root","goat1218");
-                    String sql = "select * from users where username = ? and password = ?";
+                    String sql = "select * from users where rd = ? and password = ?";
                     PreparedStatement pst = con.prepareStatement(sql);
                     pst.setString(1, username.getText());
                     pst.setString(2, password.getText());
                     ResultSet rs = pst.executeQuery();
                     if(rs.next()){
-                        String userData = "Select * from users where username = ?";
+                        String userData = "Select * from users where rd = ?";
                         PreparedStatement userStatement = con.prepareStatement(userData);
                         userStatement.setString(1, username.getText());
                         ResultSet result = userStatement.executeQuery();

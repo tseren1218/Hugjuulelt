@@ -29,6 +29,7 @@ public class Register extends JFrame {
 
         setLayout(new GridLayout(7, 1, 10, 10));
         setSize(400, 400);
+        setLocationRelativeTo(null);
         setTitle("Бүртгүүлэх");
 
         title = new JLabel("Бүртгүүлэх", SwingConstants.CENTER);
@@ -127,6 +128,7 @@ public class Register extends JFrame {
                     if(addedRows > 0) {
                         JFrame successFrame = new JFrame("Амжилттай!");
                         successFrame.setSize(100, 100);
+                        successFrame.setLocationRelativeTo(null);
                         JLabel successLabel = new JLabel("Амжилттай!");
                         successFrame.add(successLabel);
                         successFrame.setVisible(true);

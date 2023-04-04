@@ -48,16 +48,15 @@ public class IrgenModule {
         title.setForeground(Color.white);
         title.setBorder(new EmptyBorder(20, 20, 10, 10));
 
-        accountSection.setBackground(new Color(180, 255, 255));
 
         uiPanel = new JPanel(new GridLayout(1, 1));
 
-        sidebar.setBackground(new Color(180, 255, 255));
+
         sidebar.setBorder(BorderFactory.createLineBorder(Color.black));
         userPic.setText("Зураг");
-        userPic.setBackground(new Color(180, 255, 255));
+
         userPic.setOpaque(true);
-        userFullName.setBackground(new Color(180, 255, 255));
+
         userFullName.setText(user.getFname() + " " + user.getLname());
         userFullName.setOpaque(true);
 
@@ -80,6 +79,8 @@ public class IrgenModule {
             public void actionPerformed(ActionEvent e) {
                 title.setText("Хувийн мэдээлэл");
                 uiPanel.removeAll();
+                uiPanel.revalidate();
+                uiPanel.repaint();
 
                 JPanel infoPanel = new JPanel(new GridLayout(4, 2));
 
@@ -103,7 +104,15 @@ public class IrgenModule {
                 infoPanel.add(position);
                 infoPanel.setSize(200, 200);
 
-                mainPanel.add(infoPanel, BorderLayout.CENTER);
+                infoPanel.revalidate();
+                infoPanel.repaint();
+
+                uiPanel.add(infoPanel);
+                uiPanel.revalidate();
+                uiPanel.repaint();
+                mainPanel.add(uiPanel, BorderLayout.CENTER);
+                mainPanel.revalidate();
+                mainPanel.repaint();
 
                 frame.revalidate();
             }
@@ -114,7 +123,11 @@ public class IrgenModule {
     private void showVaccinationHistory() throws ClassNotFoundException, SQLException {
         title.setText("Вакцинжуулалтын түүх");
         uiPanel.removeAll();
+        uiPanel.revalidate();
+        uiPanel.repaint();
         mainPanel.remove(uiPanel);
+        mainPanel.revalidate();
+        mainPanel.repaint();
         vaccinationTable = new JTable();
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/vaccine","root","goat1218");
@@ -148,7 +161,11 @@ public class IrgenModule {
         vaccinationTable.setModel(model);
         JScrollPane scrollPane = new JScrollPane(vaccinationTable);
         uiPanel.add(vaccinationTable);
+        uiPanel.revalidate();
+        uiPanel.repaint();
         mainPanel.add(uiPanel);
+        mainPanel.revalidate();
+        mainPanel.repaint();
         frame.revalidate();
     }
 
