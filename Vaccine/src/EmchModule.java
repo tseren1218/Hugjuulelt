@@ -25,8 +25,8 @@ public class EmchModule {
     private JLabel searchLabel;
     private JLabel helpLabel;
 
-    public EmchModule(User user) {
-        this.user = user;
+    public EmchModule() {
+        this.user = User.getInstance();
         createGUI();
 
         searchButton.addActionListener(new ActionListener() {

@@ -1,19 +1,17 @@
 public class User {
 
+    private static User userInstance = null;
+
     private String rd, fname, lname, position;
 
-    public User(String rd, String fname, String lname, String position) {
-        this.rd = rd;
-        this.fname = fname;
-        this.lname = lname;
-        this.position = position;
+    private User() {
     }
 
-    public User(User user){
-        this.rd = user.getRd();
-        this.fname = user.getFname();
-        this.lname = user.getLname();
-        this.position = user.getPosition();
+    public static synchronized User getInstance() {
+        if(userInstance == null) {
+            userInstance = new User();
+        }
+        return userInstance;
     }
 
     public String getRd() {

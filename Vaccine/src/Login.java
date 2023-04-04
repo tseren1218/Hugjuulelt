@@ -51,20 +51,21 @@ public class Login extends JFrame {
                         userStatement.setString(1, username.getText());
                         ResultSet result = userStatement.executeQuery();
                         result.next();
-                        user = new User(
-                                result.getString("rd"),
-                                result.getString("fname"),
-                                result.getString("lname"),
-                                result.getString("position")
-                        );
+
+                        user = User.getInstance();
+                        user.setRd(result.getString("rd"));
+                        user.setFname(result.getString("fname"));
+                        user.setLname( result.getString("lname"));
+                        user.setPosition(result.getString("position"));
                         String res = user.getPosition().toString();
+
                         if(res.equals("emch") || res.equals("suvilagch")){
                             dispose();
-                            new EmchModule(user);
+                            new EmchModule();
                         }
                         else if(res.equals("irgen")){
                             dispose();
-                            new IrgenModule(user);
+                            new IrgenModule();
                         }
                     }
                     else

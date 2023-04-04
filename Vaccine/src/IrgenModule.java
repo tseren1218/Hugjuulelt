@@ -24,8 +24,8 @@ public class IrgenModule {
 
     ImageIcon userImg;
 
-    public IrgenModule(User user) throws SQLException, ClassNotFoundException {
-        this.user = user;
+    public IrgenModule() throws SQLException, ClassNotFoundException {
+        this.user = User.getInstance();
         createGUI();
     }
 
