@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Vaccine:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Vaccine_jar</output-path>
+    <root id="archive" name="Vaccine.jar">
+      <element id="module-output" name="Vaccine" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../Program Files (x86)/MySQL/Connector J 8.0/mysql-connector-j-8.0.32.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/JAVA_SWING_CRUD_APPLICATION_WITH_SOURCE_CODE/CRUD_Application JavaSwing/SwingCrud/test/mysql-connector-java-5.1.23-bin.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
