@@ -125,7 +125,7 @@ public class EmchModule {
                                 String sql = "insert into vaccination_history " +
                                         "set rd = ?, " + "vaccineId = ?, " + "date = now()";
                                 PreparedStatement pst = con.getConnection().prepareStatement(sql);
-                                PreparedStatement pst2 = con.getConnection().prepareStatement(sql);
+                                PreparedStatement pst2 = con.getConnection().prepareStatement(vaccine);
                                 ResultSet rs = pst2.executeQuery();
                                 rs.next();
                                 vaccineId = rs.getString("id");
