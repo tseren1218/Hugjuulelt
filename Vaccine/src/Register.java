@@ -109,13 +109,12 @@ public class Register extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
 
-                    Class.forName("com.mysql.jdbc.Driver");
-                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/vaccine","root","goat1218");
+                    DatabaseConnection con = DatabaseConnection.getInstance();
 
                     String sql = "insert into users values (?, ?, ?, ?, ?, ?)";
 
 
-                    PreparedStatement pst = con.prepareStatement(sql);
+                    PreparedStatement pst = con.getConnection().prepareStatement(sql);
                     pst.setString(1, rd.getText());
                     pst.setString(2, username.getText());
                     pst.setString(3, password.getText());
@@ -135,7 +134,7 @@ public class Register extends JFrame {
                     }
 
 
-                } catch (ClassNotFoundException | SQLException ex) {
+                } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
             }

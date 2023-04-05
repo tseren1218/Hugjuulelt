@@ -129,8 +129,9 @@ public class IrgenModule {
         mainPanel.revalidate();
         mainPanel.repaint();
         vaccinationTable = new JTable();
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/vaccine","root","goat1218");
+
+        DatabaseConnection con = DatabaseConnection.getInstance();
+
         String sql = "select " +
                 "u.fname, u.lname, v.vaccineName, vh.date " +
                 "from " +
@@ -139,7 +140,7 @@ public class IrgenModule {
                 "u.rd = vh.rd and v.id = vh.vaccineId " +
                 "and " +
                 "u.rd = ?";
-        PreparedStatement pst = con.prepareStatement(sql);
+        PreparedStatement pst = con.getConnection().prepareStatement(sql);
         pst.setString(1, user.getRd());
         ResultSet resultSet = pst.executeQuery();
 

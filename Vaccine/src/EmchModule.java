@@ -121,12 +121,11 @@ public class EmchModule {
 
                             try {
 
-                                Class.forName("com.mysql.jdbc.Driver");
-                                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/vaccine","root","goat1218");
+                                DatabaseConnection con = DatabaseConnection.getInstance();
                                 String sql = "insert into vaccination_history " +
                                         "set rd = ?, " + "vaccineId = ?, " + "date = now()";
-                                PreparedStatement pst = con.prepareStatement(sql);
-                                PreparedStatement pst2 = con.prepareStatement(vaccine);
+                                PreparedStatement pst = con.getConnection().prepareStatement(sql);
+                                PreparedStatement pst2 = con.getConnection().prepareStatement(sql);
                                 ResultSet rs = pst2.executeQuery();
                                 rs.next();
                                 vaccineId = rs.getString("id");
@@ -149,8 +148,7 @@ public class EmchModule {
                                     unsuccessfulFrame.add(unsuccessfulLabel);
                                     unsuccessfulFrame.setVisible(true);
                                 }
-                            } catch (ClassNotFoundException ex) {
-                                throw new RuntimeException(ex);
+
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -195,8 +193,7 @@ public class EmchModule {
         panel1.repaint();
         showTable = new JTable();
 
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/vaccine","root","goat1218");
+        DatabaseConnection con = DatabaseConnection.getInstance();
         PreparedStatement nameSt;
         String rdSQL;
         String rd = search.getText().trim();
@@ -221,7 +218,7 @@ public class EmchModule {
                 "and " +
                 "vh.rd = ?";
 
-        nameSt = con.prepareStatement(rdSQL);
+        nameSt = con.getConnection().prepareStatement(rdSQL);
 
         if(!rd.equals(""))
             nameSt.setString(1, search.getText());

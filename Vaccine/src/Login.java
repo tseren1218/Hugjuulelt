@@ -38,16 +38,15 @@ public class Login extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
 
-                    Class.forName("com.mysql.jdbc.Driver");
-                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/vaccine","root","goat1218");
+                    DatabaseConnection dbcon = DatabaseConnection.getInstance();
                     String sql = "select * from users where rd = ? and password = ?";
-                    PreparedStatement pst = con.prepareStatement(sql);
+                    PreparedStatement pst = dbcon.getConnection().prepareStatement(sql);
                     pst.setString(1, username.getText());
                     pst.setString(2, password.getText());
                     ResultSet rs = pst.executeQuery();
                     if(rs.next()){
                         String userData = "Select * from users where rd = ?";
-                        PreparedStatement userStatement = con.prepareStatement(userData);
+                        PreparedStatement userStatement = dbcon.getConnection().prepareStatement(userData);
                         userStatement.setString(1, username.getText());
                         ResultSet result = userStatement.executeQuery();
                         result.next();
