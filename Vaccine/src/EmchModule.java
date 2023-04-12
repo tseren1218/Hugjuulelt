@@ -31,7 +31,70 @@ public class EmchModule {
     public EmchModule() {
         this.user = User.getInstance();
         createGUI();
+        addActionListeners();
+    }
 
+    public void createGUI() {
+        frame = new JFrame();
+        frame.setSize(800, 800);
+        frame.add(panel1);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        personal_infoButton.setText("Хувийн мэдээлэл");
+        searchLabel.setText("Регистрийн дугаараар хайх");
+        helpLabel.setText("(Хоосон хайвал бүх илэрц гарна)");
+
+    }
+    public void showinfo() throws ClassNotFoundException, SQLException {
+        List.removeAll();
+        panel1.remove(List);
+        panel1.revalidate();
+        panel1.repaint();
+        showTable = new JTable();
+
+        String rd = search.getText().trim();
+        ResultSet rs;
+
+        if(rd.equals("")){
+            VaccinationHistoryDAO vhd = new VaccinationHistoryDAO();
+            vh = new ArrayList<>(vhd.getAllVacHistory());
+        }
+        else {
+            VaccinationHistoryDAO vhd = new VaccinationHistoryDAO();
+            vh = new ArrayList<>(vhd.getVacHistoryByRd(rd));
+        }
+
+        model = new DefaultTableModel();
+        model.addColumn("Регистрийн дугаар");
+        model.addColumn("Нэр");
+        model.addColumn("Овог");
+        model.addColumn("Вакцины нэр");
+        model.addColumn("Огноо");
+
+        int i = 0;
+
+        while (i < vh.size()) {
+            Object[] rowData = new Object[5];
+            rowData[0] = vh.get(i).getRd();
+            rowData[1] = vh.get(i).getFname();
+            rowData[2] = vh.get(i).getLname();
+            rowData[3] = vh.get(i).getVaccineName();
+            rowData[4] = vh.get(i).getDate();
+            model.addRow(rowData);
+            i++;
+        }
+
+
+        showTable.setModel(model);
+        List.setLayout(new GridLayout(1, 1));
+        List.add(showTable);
+        panel1.add(List, BorderLayout.CENTER);
+        frame.revalidate();
+    }
+
+    public void addActionListeners(){
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
@@ -79,7 +142,6 @@ public class EmchModule {
             }
         });
 
-
         addPatient.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
@@ -115,47 +177,23 @@ public class EmchModule {
 
                 burtgelButton.addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent e) {
+                    public void actionPerformed(ActionEvent e){
 
-                        String vaccine = "";
-                        String vaccineId = "";
-                        if(vaccineCombo.getSelectedIndex() != -1) {
-                            vaccine = "select id from vaccines where vaccineName = '" + (String)vaccineCombo.getItemAt(vaccineCombo.getSelectedIndex()) + "'";
-
-                            try {
-
-                                DatabaseConnection dbcon = DatabaseConnection.getInstance();
-                                String sql = "insert into vaccination_history " +
-                                        "set rd = ?, " + "vaccineId = ?, " + "date = now()";
-                                PreparedStatement pst = dbcon.getConnection().prepareStatement(sql);
-                                PreparedStatement pst2 = dbcon.getConnection().prepareStatement(vaccine);
-                                ResultSet rs = pst2.executeQuery();
-                                rs.next();
-                                vaccineId = rs.getString("id");
-                                pst.setString(1, rdField.getText());
-                                pst.setString(2, vaccineId);
-                                int addedRows = pst.executeUpdate();
-                                if(addedRows > 0) {
-                                    JFrame successFrame = new JFrame();
-                                    successFrame.setLocationRelativeTo(null);
-                                    successFrame.setSize(200, 200);
-                                    JLabel successLabel = new JLabel("Амжилттай бүртгэлээ!");
-                                    successFrame.add(successLabel);
-                                    successFrame.setVisible(true);
-                                }
-                                else {
-                                    JFrame unsuccessfulFrame = new JFrame();
-                                    unsuccessfulFrame.setLocationRelativeTo(null);
-                                    unsuccessfulFrame.setSize(200, 200);
-                                    JLabel unsuccessfulLabel = new JLabel("Бүртгэл амжилтгүй!");
-                                    unsuccessfulFrame.add(unsuccessfulLabel);
-                                    unsuccessfulFrame.setVisible(true);
-                                }
-
-                            } catch (SQLException ex) {
-                                throw new RuntimeException(ex);
-                            }
+                        VaccinationHistoryDAO vhd;
+                        String vaccineName = (String)vaccineCombo.getItemAt(vaccineCombo.getSelectedIndex());
+                        String rd = (String)rdField.getText();
+                        try {
+                            vhd = new VaccinationHistoryDAO();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
                         }
+
+                        try {
+                            vhd.insertVacHistory(rd, vaccineName);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
                     }
                 });
 
@@ -175,65 +213,5 @@ public class EmchModule {
             }
         });
 
-    }
-    public void createGUI() {
-        frame = new JFrame();
-        frame.setSize(800, 800);
-        frame.add(panel1);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        personal_infoButton.setText("Хувийн мэдээлэл");
-        searchLabel.setText("Регистрийн дугаараар хайх");
-        helpLabel.setText("(Хоосон хайвал бүх илэрц гарна)");
-
-    }
-    public void showinfo() throws ClassNotFoundException, SQLException {
-        List.removeAll();
-        panel1.remove(List);
-        panel1.revalidate();
-        panel1.repaint();
-        showTable = new JTable();
-
-        String rd = search.getText().trim();
-        ResultSet rs;
-
-        if(rd.equals("")){
-            VaccinationHistoryDAO vhd = new VaccinationHistoryDAO();
-            vh = new ArrayList<>(vhd.getAllVacHistory());
-        }
-        else {
-            VaccinationHistoryDAO vhd = new VaccinationHistoryDAO();
-            vh = new ArrayList<>(vhd.getVacHistoryByRd(rd));
-        }
-
-        model = new DefaultTableModel();
-//        ResultSetMetaData metaData = vh.();
-        model.addColumn("Регистрийн дугаар");
-        model.addColumn("Нэр");
-        model.addColumn("Овог");
-        model.addColumn("Вакцины нэр");
-        model.addColumn("Огноо");
-
-        int i = 0;
-
-        while (i < vh.size()) {
-            Object[] rowData = new Object[5];
-            rowData[0] = vh.get(i).getRd();
-            rowData[1] = vh.get(i).getFname();
-            rowData[2] = vh.get(i).getLname();
-            rowData[3] = vh.get(i).getVaccineName();
-            rowData[4] = vh.get(i).getDate();
-            model.addRow(rowData);
-            i++;
-        }
-
-
-        showTable.setModel(model);
-        List.setLayout(new GridLayout(1, 1));
-        List.add(showTable);
-        panel1.add(List, BorderLayout.CENTER);
-        frame.revalidate();
     }
 }

@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class IrgenModule {
 
@@ -130,33 +131,27 @@ public class IrgenModule {
         mainPanel.repaint();
         vaccinationTable = new JTable();
 
-        DatabaseConnection con = DatabaseConnection.getInstance();
-
-        String sql = "select " +
-                "u.fname, u.lname, v.vaccineName, vh.date " +
-                "from " +
-                "users u, vaccination_history vh, vaccines v " +
-                "where " +
-                "u.rd = vh.rd and v.id = vh.vaccineId " +
-                "and " +
-                "u.rd = ?";
-        PreparedStatement pst = con.getConnection().prepareStatement(sql);
-        pst.setString(1, user.getRd());
-        ResultSet resultSet = pst.executeQuery();
+        VaccinationHistoryDAO vhd = new VaccinationHistoryDAO();
+        ArrayList<VaccinationHistory> vh = new ArrayList<>(vhd.getVacHistoryByRd(this.user.getRd()));
 
         model = new DefaultTableModel();
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        for(int i = 1; i <= columnCount; i++) {
-            model.addColumn(metaData.getColumnName(i));
-        }
+        model.addColumn("Регистрийн дугаар");
+        model.addColumn("Нэр");
+        model.addColumn("Овог");
+        model.addColumn("Вакцины нэр");
+        model.addColumn("Огноо");
 
-        while(resultSet.next()) {
-            Object[] row = new Object[columnCount];
-            for(int i = 1; i <= columnCount; i++) {
-                row[i - 1] = resultSet.getObject(i);
-            }
-            model.addRow(row);
+        int i = 0;
+
+        while (i < vh.size()) {
+            Object[] rowData = new Object[5];
+            rowData[0] = vh.get(i).getRd();
+            rowData[1] = vh.get(i).getFname();
+            rowData[2] = vh.get(i).getLname();
+            rowData[3] = vh.get(i).getVaccineName();
+            rowData[4] = vh.get(i).getDate();
+            model.addRow(rowData);
+            i++;
         }
 
         vaccinationTable.setModel(model);
