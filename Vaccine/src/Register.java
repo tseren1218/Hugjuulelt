@@ -148,8 +148,6 @@ public class Register extends JFrame {
         add(positionPanel);
         add(registerButton);
 
-
-
     }
 
 }

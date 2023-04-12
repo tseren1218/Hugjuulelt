@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class EmchModule {
@@ -24,6 +25,8 @@ public class EmchModule {
     private JButton addPatient;
     private JLabel searchLabel;
     private JLabel helpLabel;
+
+    private ArrayList<VaccinationHistory> vh;
 
     public EmchModule() {
         this.user = User.getInstance();
@@ -121,11 +124,11 @@ public class EmchModule {
 
                             try {
 
-                                DatabaseConnection con = DatabaseConnection.getInstance();
+                                DatabaseConnection dbcon = DatabaseConnection.getInstance();
                                 String sql = "insert into vaccination_history " +
                                         "set rd = ?, " + "vaccineId = ?, " + "date = now()";
-                                PreparedStatement pst = con.getConnection().prepareStatement(sql);
-                                PreparedStatement pst2 = con.getConnection().prepareStatement(vaccine);
+                                PreparedStatement pst = dbcon.getConnection().prepareStatement(sql);
+                                PreparedStatement pst2 = dbcon.getConnection().prepareStatement(vaccine);
                                 ResultSet rs = pst2.executeQuery();
                                 rs.next();
                                 vaccineId = rs.getString("id");
@@ -193,51 +196,37 @@ public class EmchModule {
         panel1.repaint();
         showTable = new JTable();
 
-        DatabaseConnection con = DatabaseConnection.getInstance();
-        PreparedStatement nameSt;
-        String rdSQL;
         String rd = search.getText().trim();
         ResultSet rs;
 
         if(rd.equals("")){
-            rdSQL = "select " +
-                    "u.rd, u.fname, u.lname, v.vaccineName, vh.date " +
-                    "from " +
-                    "users u, vaccination_history vh, vaccines v " +
-                    "where u.rd = vh.rd and " +
-                    "vh.vaccineId = v.id ";
+            VaccinationHistoryDAO vhd = new VaccinationHistoryDAO();
+            vh = new ArrayList<>(vhd.getAllVacHistory());
         }
-
-        else
-            rdSQL = "select " +
-                "u.rd, u.fname, u.lname, v.vaccineName, vh.date " +
-                "from " +
-                "users u, vaccination_history vh, vaccines v " +
-                "where u.rd = vh.rd and " +
-                "vh.vaccineId = v.id " +
-                "and " +
-                "vh.rd = ?";
-
-        nameSt = con.getConnection().prepareStatement(rdSQL);
-
-        if(!rd.equals(""))
-            nameSt.setString(1, search.getText());
-
-        rs = nameSt.executeQuery();
+        else {
+            VaccinationHistoryDAO vhd = new VaccinationHistoryDAO();
+            vh = new ArrayList<>(vhd.getVacHistoryByRd(rd));
+        }
 
         model = new DefaultTableModel();
-        ResultSetMetaData metaData = rs.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        for (int i = 1; i <= columnCount; i++) {
-            model.addColumn(metaData.getColumnName(i));
-        }
+//        ResultSetMetaData metaData = vh.();
+        model.addColumn("Регистрийн дугаар");
+        model.addColumn("Нэр");
+        model.addColumn("Овог");
+        model.addColumn("Вакцины нэр");
+        model.addColumn("Огноо");
 
-        while (rs.next()) {
-            Object[] rowData = new Object[columnCount];
-            for (int i = 1; i <= columnCount; i++) {
-                rowData[i-1] = rs.getObject(i);
-            }
+        int i = 0;
+
+        while (i < vh.size()) {
+            Object[] rowData = new Object[5];
+            rowData[0] = vh.get(i).getRd();
+            rowData[1] = vh.get(i).getFname();
+            rowData[2] = vh.get(i).getLname();
+            rowData[3] = vh.get(i).getVaccineName();
+            rowData[4] = vh.get(i).getDate();
             model.addRow(rowData);
+            i++;
         }
 
 
